@@ -12,7 +12,7 @@ import (
 
 type user struct {
 	Name  string `validate:"required"`
-	Age   uint8  `validate:"gte=0,lte=130"`
+	Age   uint8  `validate:"gte=10,lte=90"`
 	Email string `validate:"required,email"`
 }
 
@@ -53,7 +53,7 @@ func handleTranslation(c *gin.Context) {
 
 	if err := validate.Struct(u); err != nil {
 		transErrs := err.(validator.ValidationErrors).Translate(getTransFromParam(c))
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": transErrs})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": getErrMsg(transErrs)})
 		return
 	}
 

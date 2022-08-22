@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	ut "github.com/go-playground/universal-translator"
@@ -13,10 +13,16 @@ var translations = map[string]map[string]string{
 	"en": {
 		"required": "{0} is a required field",
 		"email":    "{0} is invalid",
+		"gte":      "{0} must be {1} or greater",
+		"lte":      "{0} must be {1} or smaller",
 	},
 	"vi": {
 		"required": "{0} là trường bắt buộc",
 		"email":    "{0} không hợp lệ",
+		"gte":      "{0} phải bằng hoặc lớn hơn {1}",
+		"lte":      "{0} phải bằng hoặc nhỏ hơn {1}",
+		"Name":     "Tên",
+		"Age":      "Tuổi",
 	},
 }
 
@@ -27,9 +33,12 @@ func getRegisterFunc(tag, translation string) validator.RegisterTranslationsFunc
 }
 
 func translationFunc(t ut.Translator, fe validator.FieldError) string {
-	msg, err := t.T(fe.Tag(), fe.Field())
+	field, err := t.T(fe.Field())
 	if err != nil {
-		fmt.Printf("warning: error translating FieldError: %#v\n", fe)
+		field = fe.Field()
+	}
+	msg, err := t.T(fe.Tag(), field, fe.Param())
+	if err != nil {
 		return fe.(error).Error()
 	}
 	return msg
@@ -41,4 +50,12 @@ func getTransFromParam(c *gin.Context) ut.Translator {
 		t, _ = utrans.GetTranslator("en")
 	}
 	return t
+}
+
+func getErrMsg(errs validator.ValidationErrorsTranslations) string {
+	messages := make([]string, 0, len(errs))
+	for _, v := range errs {
+		messages = append(messages, v)
+	}
+	return strings.Join(messages, ". ")
 }
