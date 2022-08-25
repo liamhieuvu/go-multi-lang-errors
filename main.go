@@ -24,24 +24,8 @@ var (
 func main() {
 	setupTrans()
 	r := gin.Default()
-	r.POST("/default/users", handleDefault)
-	r.POST("/trans/users", handleTranslation)
+	r.POST("/users", handleTranslation)
 	_ = r.Run()
-}
-
-func handleDefault(c *gin.Context) {
-	var u user
-	if err := c.ShouldBindJSON(&u); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-		return
-	}
-
-	if err := validate.Struct(u); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "successful"})
 }
 
 func handleTranslation(c *gin.Context) {
@@ -53,7 +37,10 @@ func handleTranslation(c *gin.Context) {
 
 	if err := validate.Struct(u); err != nil {
 		transErrs := err.(validator.ValidationErrors).Translate(getTransFromParam(c))
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": getErrMsg(transErrs)})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message":    getErrMsg(transErrs),
+			"rawMessage": err.Error(),
+		})
 		return
 	}
 

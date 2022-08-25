@@ -11,16 +11,16 @@ import (
 // locale: tag: translation
 var translations = map[string]map[string]string{
 	"en": {
-		"required": "{0} is a required field",
-		"email":    "{0} is invalid",
-		"gte":      "{0} must be {1} or greater",
-		"lte":      "{0} must be {1} or smaller",
+		"required": "{0} is a required field.",
+		"email":    "{0} is invalid.",
+		"gte":      "{0} must be {1} or greater.",
+		"lte":      "{0} must be {1} or smaller.",
 	},
 	"vi": {
-		"required": "{0} là trường bắt buộc",
-		"email":    "{0} không hợp lệ",
-		"gte":      "{0} phải bằng hoặc lớn hơn {1}",
-		"lte":      "{0} phải bằng hoặc nhỏ hơn {1}",
+		"required": "{0} là trường bắt buộc.",
+		"email":    "{0} không hợp lệ.",
+		"gte":      "{0} phải bằng hoặc lớn hơn {1}.",
+		"lte":      "{0} phải bằng hoặc nhỏ hơn {1}.",
 		"Name":     "Tên",
 		"Age":      "Tuổi",
 	},
@@ -39,7 +39,7 @@ func translationFunc(t ut.Translator, fe validator.FieldError) string {
 	}
 	msg, err := t.T(fe.Tag(), field, fe.Param())
 	if err != nil {
-		return fe.(error).Error()
+		return fe.Error()
 	}
 	return msg
 }
@@ -57,5 +57,5 @@ func getErrMsg(errs validator.ValidationErrorsTranslations) string {
 	for _, v := range errs {
 		messages = append(messages, v)
 	}
-	return strings.Join(messages, ". ")
+	return strings.Join(messages, " ")
 }
