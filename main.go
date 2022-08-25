@@ -24,11 +24,11 @@ var (
 func main() {
 	setupTrans()
 	r := gin.Default()
-	r.POST("/users", handleTranslation)
+	r.POST("/users", createUser)
 	_ = r.Run()
 }
 
-func handleTranslation(c *gin.Context) {
+func createUser(c *gin.Context) {
 	var u user
 	if err := c.ShouldBindJSON(&u); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
