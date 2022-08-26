@@ -8,7 +8,6 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// locale: tag: translation
 var translations = map[string]map[string]string{
 	"en": {
 		"required": "{0} is a required field.",
@@ -21,15 +20,14 @@ var translations = map[string]map[string]string{
 		"email":    "{0} không hợp lệ.",
 		"gte":      "{0} phải bằng hoặc lớn hơn {1}.",
 		"lte":      "{0} phải bằng hoặc nhỏ hơn {1}.",
-		"Name":     "Tên",
-		"Age":      "Tuổi",
 	},
 }
 
-func getRegisterFunc(tag, translation string) validator.RegisterTranslationsFunc {
-	return func(t ut.Translator) error {
-		return t.Add(tag, translation, false)
-	}
+var dicts = map[string]map[string]string{
+	"vi": {
+		"Name": "Tên",
+		"Age":  "Tuổi",
+	},
 }
 
 func translationFunc(t ut.Translator, fe validator.FieldError) string {

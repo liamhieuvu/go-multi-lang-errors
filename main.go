@@ -52,10 +52,19 @@ func setupTrans() {
 	enLocale := en.New()
 	utrans = ut.New(enLocale, enLocale, vi.New())
 
-	for locale, trans := range translations {
-		t, _ := utrans.FindTranslator(locale)
-		for tag, translation := range trans {
-			_ = validate.RegisterTranslation(tag, t, getRegisterFunc(tag, translation), translationFunc)
+	for locale, dict := range dicts {
+		engine, _ := utrans.FindTranslator(locale)
+		for key, trans := range dict {
+			_ = engine.Add(key, trans, false)
+		}
+	}
+
+	for locale, translation := range translations {
+		engine, _ := utrans.FindTranslator(locale)
+		for tag, trans := range translation {
+			_ = validate.RegisterTranslation(tag, engine, func(t ut.Translator) error {
+				return t.Add(tag, trans, false)
+			}, translationFunc)
 		}
 	}
 }
